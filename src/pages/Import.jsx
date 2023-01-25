@@ -1,145 +1,129 @@
-import React, { useState } from 'react'
-import { Checkbox, Button, Typography, TextField } from '@material-ui/core'
+import React from 'react'
+import { Card, CardContent, Typography } from '@material-ui/core'
+import ReplyIcon from '@material-ui/icons/Reply'
+import InputIcon from '@material-ui/icons/Input'
 import { makeStyles } from '@material-ui/core/styles'
-import boomerang from 'boomerang-http'
-import bsv from 'babbage-bsv'
-import hashwrap from 'hash-wrap'
+import { Link } from 'react-router-dom'
 
-const useStyles = makeStyles(
-  theme => ({
-    utxos_grid: {
-      display: 'grid',
-      gridTemplateColumns: 'auto 1fr auto auto',
-      gridGap: theme.spacing(2)
+const useStyles = makeStyles(theme => ({
+  content_wrap: {
+    maxWidth: '1440px',
+    margin: 'auto',
+    marginTop: '3em',
+    boxSizing: 'border-box',
+    padding: '2em',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0.5em',
+      padding: '0.5em'
     }
-  }),
-  { name: 'Sweep' }
-)
+  },
+  title_text: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2em'
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.6em'
+    }
+  },
+  card_link: {
+    textDecoration: 'none !important'
+  },
+  card_container: {
+    margin: '1.5em auto'
+  },
+  card_grid: {
+    display: 'grid',
+    gridTemplateColumns: '4em 1fr',
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      gridTemplateColumns: '3em 1fr',
+    },
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: '2.5em 1fr',
+    }
+  },
+  link_text: {
+    textAlign: 'left'
+  }
+}), { name: 'Welcome' })
 
-const Sweep = () => {
+const Welcome = ({ history }) => {
   const classes = useStyles()
-  const [utxos, setUtxos] = useState([])
-  const [key, setKey] = useState('')
-  const [network, setNetwork] = useState('mainnet')
-
-  const handleGetUtxos = async () => {
-    const add = bsv.Address.fromPrivateKey(bsv.PrivateKey.fromWIF(key))
-    const addr = add.toString()
-    const network = add.network.name
-    setNetwork(network)
-    const wocNet = network === 'testnet' ? 'test' : 'main'
-    const got = await boomerang(
-      'GET',
-      `https://api.whatsonchain.com/v1/bsv/${wocNet}/address/${addr}/unspent`
-    )
-    setUtxos(got.map(x => ({
-      txid: x.tx_hash,
-      vout: x.tx_pos,
-      satoshis: x.value,
-      selected: true
-    })))
-  }
-
-  const handleSweep = async () => {
-    const selectedUtxos = utxos.filter(x => x.selected)
-    console.log('selected', selectedUtxos)
-    const inputs = {}
-    for (const i in selectedUtxos) {
-      const utxo = selectedUtxos[i]
-      if (!inputs[utxo.txid]) {
-        inputs[utxo.txid] = await hashwrap(utxo.txid, {
-          network,
-          taalApiKey: network === 'testnet'
-            ? 'testnet_ba132cc4d5b2ebde7ed0ee0f6ee3f678'
-            : 'mainnet_6c8f8c37afd5c45e09f62d083288a181'
-        })
-        inputs[utxo.txid].outputsToRedeem = []
-      }
-      const tx = new bsv.Transaction()
-      tx.from(new bsv.Transaction.UnspentOutput({
-        txid: utxo.txid,
-        outputIndex: utxo.vout,
-        script: bsv.Script.fromAddress(bsv.Address.fromPrivateKey(
-          bsv.PrivateKey.fromWIF(key)
-        )),
-        satoshis: utxo.satoshis
-      }))
-      const sig = bsv.Transaction.Sighash.sign(
-        tx,
-        bsv.PrivateKey.fromWIF(key),
-        bsv.crypto.Signature.SIGHASH_FORKID |
-        bsv.crypto.Signature.SIGHASH_NONE |
-        bsv.crypto.Signature.SIGHASH_ANYONECANPAY,
-        0, // Always 0
-        bsv.Script.fromAddress(bsv.Address.fromPrivateKey(
-          bsv.PrivateKey.fromWIF(key)
-        )),
-        new bsv.crypto.BN(utxo.satoshis)
-      )
-      const unlockingScript = bsv.Script.buildPublicKeyHashIn(
-        bsv.PrivateKey.fromWIF(key).publicKey,
-        sig,
-        sig.nhashtype
-      ).toHex()
-      inputs[utxo.txid].outputsToRedeem.push({
-        index: utxo.vout,
-        unlockingScript
-      })
-    }
-    console.log(inputs)
-    // Create transaction redeeming selected UTXOs
-    const result = await window.Ninja.getTransactionWithOutputs({
-      inputs
-    })
-    console.log(result)
-  }
 
   return (
-    <div>
-      <Typography variant='h3'>Import</Typography>
-      <TextField
-        label='WIF key'
-        onChange={e => setKey(e.target.value)}
-      />
-      <Button onClick={handleGetUtxos}>Get UTXOs</Button>
-      <div className={classes.utxos_grid}>
-        <Typography><b>Sweep?</b></Typography>
-        <Typography><b>txid</b></Typography>
-        <Typography><b>vout</b></Typography>
-        <Typography><b>amount</b></Typography>
-        {utxos.map((x, i) => (
-          <>
-            <Checkbox
-              key={`${x.txid}.${x.vout}-cb-${i}-${x.selected}`}
-              checked={x.selected}
-              value={x.selected ? 'on' : 'off'}
-              onChange={() => {
-                setUtxos(old => {
-                  const n = [...old]
-                  n[i].selected = !old[i].selected
-                  return n
-                })
-              }}
-            />
-            <Typography key={`${x.txid}.${x.vout}-t1`}>{x.txid}</Typography>
-            <Typography key={`${x.txid}.${x.vout}-t2`}>{x.vout}</Typography>
-            <Typography key={`${x.txid}.${x.vout}-t3`}>{x.satoshis / 100000000}</Typography>
-          </>
-        ))}
-      </div>
-      <Button disabled={utxos.length < 1} onClick={handleSweep}>Sweep</Button>
-      <Button
-        onClick={async () => {
-          const result = await window.Ninja.getTransactionWithOutputs({
-            outputs: [{ script: '006a', satoshis: 0 }]
-          })
-          console.log(result)
-        }}
-      >
-        test
-      </Button>
-    </div>
+    <center className={classes.content_wrap}>
+      <Typography className={classes.title_text} variant='h1' paragraph>Import BSV</Typography>
+      <Link type='button' to='/' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <ReplyIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>Go Back</Typography>
+              <Typography color='textSecondary'>Return to the main menu</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Link to='/import-from-wif' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <InputIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>WIF Private Key</Typography>
+              <Typography color='textSecondary'>Sweep funds from a Wallet Import Format (WIF) key</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Link to='/import-from-user' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <InputIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>Another MetaNet User</Typography>
+              <Typography color='textSecondary'>Receive incoming funds sent from another user</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Link to='/import-from-ninja' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <InputIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>Ninja Private Key</Typography>
+              <Typography color='textSecondary'>Withdraw from a Ninja private key into your MetaNet Client</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Link to='/import-from-money-button' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <InputIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>Money Button</Typography>
+              <Typography color='textSecondary'>Withdraw from your Money Button account into your MetaNet Client</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Link to='/import-from-handcash' className={classes.card_link}>
+        <Card elevation={3} className={classes.card_container}>
+          <CardContent className={classes.card_grid}>
+            <InputIcon color='primary' />
+            <div className={classes.link_text}>
+              <Typography variant='h5'>HandCash</Typography>
+              <Typography color='textSecondary'>Withdraw from HandCash into your MetaNet Client</Typography>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      <Typography color='textSecondary'>
+        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank'>GitHub</a>.
+      </Typography>
+    </center>
   )
 }
 
-export default Sweep
+export default Welcome

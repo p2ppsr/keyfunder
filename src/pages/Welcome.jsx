@@ -75,6 +75,9 @@ const Welcome = ({ history }) => {
           </CardContent>
         </Card>
       </Link>
+      <Typography color='textSecondary'>
+        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank'>GitHub</a>.
+      </Typography>
     </center>
   )
 }
