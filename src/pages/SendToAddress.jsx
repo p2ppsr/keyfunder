@@ -9,9 +9,8 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import bsv from 'babbage-bsv'
-import { isAuthenticated, getNetwork, getPublicKey, createAction } from '@babbage/sdk'
+import { isAuthenticated, getNetwork, createAction } from '@babbage/sdk'
 import { toast } from 'react-toastify'
-import Ninja from 'utxoninja'
 import { Link } from 'react-router-dom'
 import ReplyIcon from '@material-ui/icons/Reply'
 import SendIcon from '@material-ui/icons/Send'
@@ -47,10 +46,10 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: '4em 1fr',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      gridTemplateColumns: '3em 1fr',
+      gridTemplateColumns: '3em 1fr'
     },
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '2.5em 1fr',
+      gridTemplateColumns: '2.5em 1fr'
     }
   },
   link_text: {
@@ -150,44 +149,47 @@ const Send = () => {
           </CardContent>
         </Card>
       </Link>
-      {!success ? (
-        <>
-          <Typography paragraph>
-            Legacy BSV addresses are fundamentally unscalable and bad. There is no SPV data exchanged, and this is not a peer-to-peer transaction. It is supported for compatibility reasons only. <b style={{ color: 'red' }}>Avoid legacy BSV addresses WHENEVER POSSIBLE!</b>
-          </Typography>
-          <TextField
-            fullWidth
-            label='Legacy BSV Address 🤮'
-            value={address}
-            onChange={e => setAddress(e.target.value)}
-          />
-          <br />
-          <br />
-          <TextField
-            label='Amount (satoshis)'
-            type='number'
-            fullWidth
-            value={amount}
-            onChange={e => setAmount(parseInt(e.target.value))}
-          />
-          <br />
-          <br />
-          <Button
-            disabled={loading}
-            onClick={handleSend}
-            variant='contained'
-            color='primary'
-            size='large'
-          >
-            😬 Send to Address
-          </Button>
-          <br />
-          <br />
-          {loading && <LinearProgress />}
-        </>) : (
-        <>
-          <Typography paragraph>
-            You sent <b>{amount} satoshis</b> to a legacy BSV address (<b>{address}</b>), and we're not sure if the money has been received or processed by the recipient. But that's just how it goes with legacy BSV addresses 🙃
+      {!success
+        ? (
+          <>
+            <Typography paragraph>
+              Legacy BSV addresses are fundamentally unscalable and bad. There is no SPV data exchanged, and this is not a peer-to-peer transaction. It is supported for compatibility reasons only. <b style={{ color: 'red' }}>Avoid legacy BSV addresses WHENEVER POSSIBLE!</b>
+            </Typography>
+            <TextField
+              fullWidth
+              label='Legacy BSV Address 🤮'
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+            />
+            <br />
+            <br />
+            <TextField
+              label='Amount (satoshis)'
+              type='number'
+              fullWidth
+              value={amount}
+              onChange={e => setAmount(parseInt(e.target.value))}
+            />
+            <br />
+            <br />
+            <Button
+              disabled={loading}
+              onClick={handleSend}
+              variant='contained'
+              color='primary'
+              size='large'
+              startIcon={<SendIcon />}
+            >
+              😬 Send to Address
+            </Button>
+            <br />
+            <br />
+            {loading && <LinearProgress />}
+          </>)
+        : (
+          <>
+            <Typography paragraph>
+              You sent <b>{amount} satoshis</b> to a legacy BSV address (<b>{address}</b>), and we're not sure if the money has been received or processed by the recipient. But that's just how it goes with legacy BSV addresses 🙃
             </Typography>
             <Typography paragraph>
               <b>TXID: </b> {txid}
@@ -195,20 +197,20 @@ const Send = () => {
             <Typography variant='h4'>SPV Information (in case you wanted it)</Typography>
             <pre className={classes.spv_data_display}>
               {SPVData}
-              </pre>
-          <Button
-            onClick={() => {
-              setSuccess(false)
-              setAmount('')
+            </pre>
+            <Button
+              onClick={() => {
+                setSuccess(false)
+                setAmount('')
                 setSPVData('')
                 setTxid('')
-            }}
-            variant='contained'
-          >
-            Done
-          </Button>
-        </>
-      )}
+              }}
+              variant='contained'
+            >
+              Done
+            </Button>
+          </>
+          )}
     </div>
   )
 }

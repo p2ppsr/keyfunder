@@ -36,10 +36,10 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: '4em 1fr',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      gridTemplateColumns: '3em 1fr',
+      gridTemplateColumns: '3em 1fr'
     },
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '2.5em 1fr',
+      gridTemplateColumns: '2.5em 1fr'
     }
   },
   link_text: {
@@ -80,7 +80,7 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <SendIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>Another MetaNet User</Typography>
+              <Typography variant='h5'>COMING SOON: Another MetaNet User</Typography>
               <Typography color='textSecondary'>The recipient will need to approve the request</Typography>
             </div>
           </CardContent>
@@ -98,7 +98,7 @@ const Welcome = ({ history }) => {
         </Card>
       </Link>
       <Typography color='textSecondary'>
-        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank'>GitHub</a>.
+        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank' rel='noreferrer'>GitHub</a>.
       </Typography>
     </center>
   )

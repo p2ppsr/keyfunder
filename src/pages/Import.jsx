@@ -36,10 +36,10 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: '4em 1fr',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      gridTemplateColumns: '3em 1fr',
+      gridTemplateColumns: '3em 1fr'
     },
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '2.5em 1fr',
+      gridTemplateColumns: '2.5em 1fr'
     }
   },
   link_text: {
@@ -80,7 +80,7 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <InputIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>Another MetaNet User</Typography>
+              <Typography variant='h5'>COMING SOON: Another MetaNet User</Typography>
               <Typography color='textSecondary'>Receive incoming funds sent from another user</Typography>
             </div>
           </CardContent>
@@ -91,7 +91,7 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <InputIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>Ninja Private Key</Typography>
+              <Typography variant='h5'>COMING SOON: Ninja Private Key</Typography>
               <Typography color='textSecondary'>Withdraw from a Ninja private key into your MetaNet Client</Typography>
             </div>
           </CardContent>
@@ -102,7 +102,7 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <InputIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>Money Button</Typography>
+              <Typography variant='h5'>COMING SOON: Money Button</Typography>
               <Typography color='textSecondary'>Withdraw from your Money Button account into your MetaNet Client</Typography>
             </div>
           </CardContent>
@@ -113,14 +113,14 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <InputIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>HandCash</Typography>
+              <Typography variant='h5'>COMING SOON: HandCash</Typography>
               <Typography color='textSecondary'>Withdraw from HandCash into your MetaNet Client</Typography>
             </div>
           </CardContent>
         </Card>
       </Link>
       <Typography color='textSecondary'>
-        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank'>GitHub</a>.
+        This software is open-source. Check out the code on <a href='https://github.com/p2ppsr/keyfunder' target='_blank' rel='noreferrer'>GitHub</a>.
       </Typography>
     </center>
   )

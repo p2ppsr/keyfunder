@@ -47,10 +47,10 @@ const useStyles = makeStyles(theme => ({
     gridTemplateColumns: '4em 1fr',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      gridTemplateColumns: '3em 1fr',
+      gridTemplateColumns: '3em 1fr'
     },
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '2.5em 1fr',
+      gridTemplateColumns: '2.5em 1fr'
     }
   },
   link_text: {
@@ -77,71 +77,6 @@ const Send = () => {
   const [ninjaSuccess, setNinjaSuccess] = useState(false)
   const [ninjaSPVData, setNinjaSPVData] = useState('')
 
-  // const handleSend = async () => {
-  //   try {
-  //     setLoading(true)
-  //     const authenticated = await isAuthenticated()
-  //     if (!authenticated) {
-  //       throw new Error('No MetaNet user is authenticated!')
-  //     }
-  //     const intermediateKey = bsv.PrivateKey.fromRandom()
-  //     const script = new bsv.Script(
-  //       bsv.Script.fromAddress(bsv.Address.fromPrivateKey(intermediateKey))
-  //     )
-  //     const fundingTx = await window.Ninja.getTransactionWithOutputs({
-  //       outputs: [{
-  //         script: script.toHex(),
-  //         satoshis: parseInt(amount)
-  //       }]
-  //     })
-  //     const fundingTxid = new bsv.Transaction(fundingTx.rawTx).id
-  //     const tx = new bsv.Transaction()
-  //     tx.from(new bsv.Transaction.UnspentOutput({
-  //       txid: fundingTxid,
-  //       outputIndex: 0,
-  //       script,
-  //       satoshis: parseInt(amount)
-  //     }))
-  //     console.log('got tx', tx)
-  //     let sighashType = bsv.crypto.Signature.SIGHASH_FORKID |
-  //       bsv.crypto.Signature.SIGHASH_NONE |
-  //       bsv.crypto.Signature.SIGHASH_ANYONECANPAY
-  //     const signature = bsv.Transaction.Sighash.sign(
-  //       tx,
-  //       intermediateKey,
-  //       sighashType,
-  //       0, // input index
-  //       script, // locking script
-  //       new bsv.crypto.BN(parseInt(amount))
-  //     )
-  //     console.log('got sig', signature)
-  //     const unlockingScript = bsv.Script.buildPublicKeyHashIn(
-  //       intermediateKey.publicKey,
-  //       signature,
-  //       signature.nhashtype
-  //     ).toHex()
-  //     await createAction({
-  //       description: 'Receive money from the Ninja UI',
-  //       inputs: {
-  //         [fundingTxid]: {
-  //           ...fundingTx,
-  //           outputsToRedeem: [{
-  //             index: 0,
-  //             unlockingScript
-  //           }]
-  //         }
-  //       }
-  //     })
-  //     setSuccess(true)
-  //     toast.success('Payment sent! Restart Babbage Desktop.')
-  //   } catch (e) {
-  //     toast.error(e.message)
-  //     console.error(e)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
   const handleNinjaSend = async () => {
     try {
       setNinjaLoading(true)
@@ -152,7 +87,7 @@ const Send = () => {
         throw new Error('No MetaNet user is authenticated!')
       }
 
-       // Create a foreign Ninja for processing the new payment
+      // Create a foreign Ninja for processing the new payment
       const foreignNinja = new Ninja({
         privateKey: ninjaPrivateKey,
         config: {
@@ -245,69 +180,72 @@ const Send = () => {
           </CardContent>
         </Card>
       </Link>
-      {!ninjaSuccess ? (
-        <>
-          <Typography paragraph>
-            Enter the Ninja's private key and Dojo URL. Then enter the amount to send.
-          </Typography>
-          <TextField
-            fullWidth
-            label='Private Key (hex)'
-            value={ninjaPrivateKey}
-            onChange={e => setNinjaPrivateKey(e.target.value)}
-          />
-          <br />
-          <br />
-          <TextField
-            fullWidth
-            label='External Dojo URL'
-            value={ninjaDojoURL}
-            onChange={e => setNinjaDojoURL(e.target.value)}
-          />
-          <br />
-          <br />
-          <TextField
-            label='Amount (satoshis)'
-            type='number'
-            fullWidth
-            value={ninjaAmount}
-            onChange={e => setNinjaAmount(parseInt(e.target.value))}
-          />
-          <br />
-          <br />
-          <Button
-            disabled={ninjaLoading}
-            onClick={handleNinjaSend}
-            variant='contained'
-            color='primary'
-            size='large'
-          >
-            Send to Ninja
-          </Button>
-          <br />
-          <br />
-          {ninjaLoading && <LinearProgress />}
-        </>) : (
-        <>
-          <Typography paragraph>
-            You sent <b>{ninjaAmount} satoshis</b> to an external Ninja! The money has been received and processed by the recipient.
+      {!ninjaSuccess
+        ? (
+          <>
+            <Typography paragraph>
+              Enter the Ninja's private key and Dojo URL. Then enter the amount to send.
+            </Typography>
+            <TextField
+              fullWidth
+              label='Private Key (hex)'
+              value={ninjaPrivateKey}
+              onChange={e => setNinjaPrivateKey(e.target.value)}
+            />
+            <br />
+            <br />
+            <TextField
+              fullWidth
+              label='External Dojo URL'
+              value={ninjaDojoURL}
+              onChange={e => setNinjaDojoURL(e.target.value)}
+            />
+            <br />
+            <br />
+            <TextField
+              label='Amount (satoshis)'
+              type='number'
+              fullWidth
+              value={ninjaAmount}
+              onChange={e => setNinjaAmount(parseInt(e.target.value))}
+            />
+            <br />
+            <br />
+            <Button
+              disabled={ninjaLoading}
+              onClick={handleNinjaSend}
+              variant='contained'
+              color='primary'
+              size='large'
+              startIcon={<SendIcon />}
+            >
+              Send to Ninja
+            </Button>
+            <br />
+            <br />
+            {ninjaLoading && <LinearProgress />}
+          </>)
+        : (
+          <>
+            <Typography paragraph>
+              You sent <b>{ninjaAmount} satoshis</b> to an external Ninja! The money has been received and processed by the recipient.
             </Typography>
             <Typography variant='h4'>SPV Information</Typography>
             <pre className={classes.spv_data_display}>
               {ninjaSPVData}
-              </pre>
-          <Button
-            onClick={() => {
-              setNinjaSuccess(false)
-              setNinjaAmount('')
-              setNinjaSPVData('')
-            }}
-            variant='contained'
-          >
-            Done
-          </Button>
-        </>
-      )}
+            </pre>
+            <Button
+              onClick={() => {
+                setNinjaSuccess(false)
+                setNinjaAmount('')
+                setNinjaSPVData('')
+              }}
+              variant='contained'
+            >
+              Done
+            </Button>
+          </>
+          )}
     </div>
   )
 }

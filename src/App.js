@@ -5,11 +5,10 @@ import ImportFromWIF from './pages/ImportFromWIF'
 import Send from './pages/Send'
 import SendToNinja from './pages/SendToNinja'
 import SendToAddress from './pages/SendToAddress'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Typography } from '@material-ui/core'
-import { Link } from 'react-router-dom'
 
 const App = () => {
   return (
@@ -22,16 +21,18 @@ const App = () => {
           <Route path='/send' component={Send} />
           <Route path='/send-to-ninja' component={SendToNinja} />
           <Route path='/send-to-address' component={SendToAddress} />
-          <Route default component={() => (
-            <center style={{ marginTop: '2em' }}>
-              <Typography align='center' variant='h4' paragraph>
-                This functionality is not yet supported.
-              </Typography>
-              <Typography>
-                <Link to='/'>Back to Main Menu</Link>
-              </Typography>
-            </center>
-          )} />
+          <Route
+            default component={() => (
+              <center style={{ marginTop: '2em' }}>
+                <Typography align='center' variant='h4' paragraph>
+                  This functionality is not yet supported.
+                </Typography>
+                <Typography>
+                  <Link to='/'>Back to Main Menu</Link>
+                </Typography>
+              </center>
+            )}
+          />
         </Switch>
       </Router>
       <ToastContainer />
