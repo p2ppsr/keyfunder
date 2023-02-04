@@ -102,7 +102,7 @@ const Welcome = ({ history }) => {
           <CardContent className={classes.card_grid}>
             <InputIcon color='primary' />
             <div className={classes.link_text}>
-              <Typography variant='h5'>COMING SOON: Money Button</Typography>
+              <Typography variant='h5'>Money Button</Typography>
               <Typography color='textSecondary'>Withdraw from your Money Button account into your MetaNet Client</Typography>
             </div>
           </CardContent>

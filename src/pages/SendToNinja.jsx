@@ -110,7 +110,6 @@ const Send = () => {
         .randomBytes(10)
         .toString('base64')
       // Derive the public key used for creating the output script
-      // getPublicKey
       const derivedPublicKey = await getPublicKey({
         counterparty: bsv.PrivateKey.fromHex(ninjaPrivateKey)
           .publicKey.toString(),

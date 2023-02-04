@@ -2,6 +2,7 @@ import React from 'react'
 import Welcome from './pages/Welcome'
 import Import from './pages/Import'
 import ImportFromWIF from './pages/ImportFromWIF'
+import ImportFromMoneyButton from './pages/ImportFromMoneyButton'
 import Send from './pages/Send'
 import SendToNinja from './pages/SendToNinja'
 import SendToAddress from './pages/SendToAddress'
@@ -18,6 +19,7 @@ const App = () => {
           <Route exact path='/' component={Welcome} />
           <Route path='/import' component={Import} />
           <Route path='/import-from-wif' component={ImportFromWIF} />
+          <Route path='/import-from-money-button' component={ImportFromMoneyButton} />
           <Route path='/send' component={Send} />
           <Route path='/send-to-ninja' component={SendToNinja} />
           <Route path='/send-to-address' component={SendToAddress} />
