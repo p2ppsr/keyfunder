@@ -92,7 +92,7 @@ const Send = () => {
       if (addressNetwork === 'livenet') {
         addressNetwork = 'mainnet'
       }
-      if (`${userNetwork}net` !== addressNetwork) {
+      if (`${userNetwork}` !== addressNetwork) {
         throw new Error(`MetaNet user and Bitcoin SV address are not on the same network! MetaNet user: ${userNetwork}net, Address: ${addressNetwork}`)
       }
 
