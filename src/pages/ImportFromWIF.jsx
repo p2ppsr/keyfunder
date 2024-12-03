@@ -118,8 +118,8 @@ const Sweep = () => {
       if (addressNetwork === 'livenet') {
         addressNetwork = 'mainnet'
       }
-      if (`${userNetwork}net` !== addressNetwork) {
-        throw new Error(`MetaNet user and WIF key are not on the same network! MetaNet user: ${userNetwork}net, WIF key: ${addressNetwork}`)
+      if (userNetwork !== addressNetwork) {
+        throw new Error(`MetaNet user and WIF key are not on the same network! MetaNet user: ${userNetwork}, WIF key: ${addressNetwork}`)
       }
 
       const selectedUtxos = utxos.filter(x => x.selected)
